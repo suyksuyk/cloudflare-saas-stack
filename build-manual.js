@@ -75,37 +75,4 @@ const routesConfig = {
 };
 fs.writeFileSync('.vercel/output/_routes.json', JSON.stringify(routesConfig, null, 2));
 
-// 7. 创建 worker.js 文件
-console.log('⚡ 创建 Worker 文件...');
-const workerCode = `
-import { getPlatformProxy } from 'wrangler';
-
-export default {
-  async fetch(request, env, ctx) {
-    const url = new URL(request.url);
-    
-    // 处理静态文件
-    if (url.pathname.startsWith('/_next/static/') || 
-        url.pathname.startsWith('/favicon.ico') ||
-        url.pathname === '/robots.txt') {
-      return env.ASSETS.fetch(request);
-    }
-    
-    // 处理 API 路由
-    if (url.pathname.startsWith('/api/')) {
-      // 这里会由 Cloudflare Pages Functions 处理
-      return new Response('Not Found', { status: 404 });
-    }
-    
-    // 处理页面路由
-    try {
-      return await env.ASSETS.fetch(request);
-    } catch (error) {
-      return new Response('Page not found', { status: 404 });
-    }
-  }
-};
-`;
-fs.writeFileSync('.vercel/output/static/_worker.js', workerCode);
-
 console.log('✅ 构建完成！输出目录：.vercel/output/static');
