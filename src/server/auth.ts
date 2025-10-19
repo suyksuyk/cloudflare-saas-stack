@@ -134,10 +134,10 @@ export const {
 				console.log(`新用户注册: ${user.email} (${account?.provider})`);
 			}
 		},
-		async signOut({ session }) {
+		async signOut(message: { session: any } | { token: any }) {
 			// 记录用户登出事件
-			if (session && 'user' in session && session.user) {
-				console.log(`用户登出: ${(session.user as any).email}`);
+			if ('session' in message && message.session && 'user' in message.session && message.session.user) {
+				console.log(`用户登出: ${(message.session.user as any).email}`);
 			}
 		},
 	},
