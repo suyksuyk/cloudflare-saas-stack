@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { Button } from "@/components/ui/button";
 import { sql } from "drizzle-orm";
 import { authFunc as auth, signInFunc as signIn, signOutFunc as signOut, USE_MOCK_AUTH, mockCredentials } from "@/server/auth-config";
@@ -120,7 +121,7 @@ export default async function Page() {
 										});
 									}}
 								>
-									<Button className="mt-2" type="submit">Mock登录 (测试用户)</Button>
+							<Button className="mt-2" type="submit">Mock登录 (测试用户)</Button>
 								</form>
 								<form
 									action={async () => {
