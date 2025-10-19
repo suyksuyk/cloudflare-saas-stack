@@ -1,0 +1,10 @@
+# Next.js routes for Cloudflare Pages
+
+# Handle static assets
+/_next/static/* /_next/static/:splat 200
+
+# Handle API routes - let Functions handle them
+/api/* /api/:splat 200
+
+# Handle all other routes with Next.js server
+/* /:splat 200
