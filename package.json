@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:cf": "node build-cf-pages.js",
     "start": "next start",
     "lint": "next lint",
     "pages:build": "bunx @cloudflare/next-on-pages",
