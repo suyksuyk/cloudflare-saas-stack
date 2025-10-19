@@ -99,18 +99,49 @@ export default async function Page() {
 								await signOut();
 							}}
 						>
-							<Button className="mt-4">Sign out</Button>
+							<Button className="mt-4">退出登录</Button>
 						</form>
 					</>
 				) : (
-					<form
-						action={async () => {
-							"use server";
-							await signIn("google");
-						}}
-					>
-						<Button className="mt-4">Login with Google</Button>
-					</form>
+					<div className="mt-4">
+						<p className="mb-2 text-sm text-gray-600">
+							使用任意邮箱即可登录（密码任意填写）
+						</p>
+						<form
+							action={async (formData) => {
+								"use server";
+								const email = formData.get("email") as string;
+								const password = formData.get("password") as string;
+								
+								if (email) {
+									await signIn("credentials", {
+										email,
+										password,
+										redirect: false,
+									});
+								}
+							}}
+							className="flex flex-col gap-2"
+						>
+							<input
+								type="email"
+								name="email"
+								placeholder="输入邮箱"
+								required
+								className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+							/>
+							<input
+								type="password"
+								name="password"
+								placeholder="输入密码（任意）"
+								required
+								className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+							/>
+							<Button type="submit" className="mt-2">
+								登录
+							</Button>
+						</form>
+					</div>
 				)}
 			</div>
 		</main>
