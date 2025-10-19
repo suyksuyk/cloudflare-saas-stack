@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { sql } from "drizzle-orm";
-import { auth, signIn, signOut } from "@/server/auth";
+import { authFunc as auth, signInFunc as signIn, signOutFunc as signOut, USE_MOCK_AUTH, mockCredentials } from "@/server/auth-config";
 import { db } from "@/server/db";
 import { users } from "@/server/db/schema";
 import { getThemeToggler } from "@/lib/theme/get-theme-button";
@@ -103,14 +103,48 @@ export default async function Page() {
 						</form>
 					</>
 				) : (
-					<form
-						action={async () => {
-							"use server";
-							await signIn("google");
-						}}
-					>
-						<Button className="mt-4">Login with Google</Button>
-					</form>
+					<>
+						{USE_MOCK_AUTH ? (
+							<div className="space-y-2">
+								<p className="text-sm text-gray-600">Mock登录模式 - 使用以下凭据:</p>
+								<div className="space-y-2 text-xs">
+									<div>测试用户: test@example.com / password</div>
+									<div>开发者: dev@example.com / password</div>
+								</div>
+								<form
+									action={async () => {
+										"use server";
+										await signIn("mock", { 
+											email: mockCredentials.testUser.email, 
+											password: mockCredentials.testUser.password 
+										});
+									}}
+								>
+									<Button className="mt-2" type="submit">Mock登录 (测试用户)</Button>
+								</form>
+								<form
+									action={async () => {
+										"use server";
+										await signIn("mock", { 
+											email: mockCredentials.devUser.email, 
+											password: mockCredentials.devUser.password 
+										});
+									}}
+								>
+									<Button className="mt-2" variant="outline" type="submit">Mock登录 (开发者)</Button>
+								</form>
+							</div>
+						) : (
+							<form
+								action={async () => {
+									"use server";
+									await signIn("google");
+								}}
+							>
+								<Button className="mt-4">Login with Google</Button>
+							</form>
+						)}
+					</>
 				)}
 			</div>
 		</main>
