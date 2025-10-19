@@ -1,8 +1,8 @@
 import { auth, signIn, signOut } from "./auth";
 import { auth as authMock, signIn as signInMock, signOut as signOutMock } from "./auth-mock";
 
-// 检查是否为开发模式或启用mock模式
-const USE_MOCK_AUTH = process.env.USE_MOCK_AUTH === "true" || process.env.NODE_ENV === "development";
+// 检查是否启用mock模式
+const USE_MOCK_AUTH = process.env.USE_MOCK_AUTH === "true";
 
 // 导出对应的认证函数
 export const authFunc = USE_MOCK_AUTH ? authMock : auth;
