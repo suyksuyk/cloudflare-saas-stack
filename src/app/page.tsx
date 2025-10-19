@@ -69,19 +69,19 @@ export default async function Page() {
 				</a>{" "}
 				and Nextjs. Fully Typesafe. Best practices followed by default.
 				<br /> <br />
-				Here&apos;s what the stack includes:
+				Here's what the stack includes:
 				<ul className="list-disc mt-4 prose dark:prose-invert">
 					<li>
 						Authentication with <code>next-auth</code>
 					</li>
-					<li>Database using Cloudflare&apos;s D1 serverless databases</li>
+					<li>Database using Cloudflare's D1 serverless databases</li>
 					<li>Drizzle ORM, already connected to your database and auth ⚡</li>
 					<li>Light/darkmode theming that works with server components (!)</li>
 						<li>Styling using TailwindCSS and ShadcnUI</li>
 						<li>Turborepo with a landing page and shared components</li>
 						<li>Cloudflare wrangler for quick functions on the edge</li>
 						<li>
-							... best part: everything&apos;s already set up for you. Just code!
+							... best part: everything's already set up for you. Just code!
 						</li>
 				</ul>
 				<div className="mt-4 flex flex-col gap-2">
@@ -99,7 +99,7 @@ export default async function Page() {
 								await signOut();
 							}}
 						>
-							<Button className="mt-4">Sign out</Button>
+							<Button className="mt-4">退出登录</Button>
 						</form>
 					</>
 				) : (

@@ -1,5 +1,5 @@
 name = "cloudflare-saas-stack"
-compatibility_date = "2024-09-03"
+compatibility_date = "2024-09-23"
 compatibility_flags = [ "nodejs_compat" ]
 pages_build_output_dir = ".next"
 
@@ -11,6 +11,11 @@ mode = "smart"
 
 [[d1_databases]]
 binding = "DATABASE"
+<<<<<<< HEAD
 database_name = "cfsaas-db"
 database_id = "97b18814-4bf6-44fe-9630-d172eeebd1c6"
+=======
+database_name = "cf_saas-db"
+database_id = "6b67bd2f-0a58-43fd-9721-479f33b10968"
+>>>>>>> ec3929028ad3be43467f21fad8efbef1e86765bf
 migrations_dir = "./drizzle"
