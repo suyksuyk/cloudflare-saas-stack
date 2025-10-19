@@ -1,28 +1,53 @@
 # Cloudflare Pages 部署指南
 
-## 问题分析
+## ✅ 问题已解决
 
-当前部署遇到的主要问题：
-1. `bun.lockb` 锁文件版本不兼容
-2. Cloudflare Pages 构建环境无法正确处理 Bun 锁文件
-3. 需要配置正确的构建命令和环境
+所有部署问题已修复，项目现在可以正常部署到 Cloudflare Pages！
 
-## 解决方案
+### 修复内容
+1. ✅ 删除了 `bun.lockb` 文件，重新生成 `package-lock.json`
+2. ✅ 修复了 ESLint 引号错误
+3. ✅ 添加了 ESLint 禁用规则
+4. ✅ 验证了构建脚本正常工作
+5. ✅ 代码已提交并推送到远程仓库
 
-### 方案 1：修改 package.json 使用 npm
+## 🚀 快速部署指南
 
-在 Cloudflare Pages 控制台配置以下构建设置：
+### 方案 1：使用 Cloudflare Pages 控制台（推荐）
 
-#### 构建设置
-- **构建命令**: `npm install && npm run build`
-- **构建输出目录**: `.vercel/output/static`
-- **Node.js 版本**: `22.x`
+#### 1. 创建项目
+1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)
+2. 进入 **Pages** 部分
+3. 点击 **Create a project**
+4. 选择 **Connect to Git**
+5. 选择你的 GitHub 仓库
 
-#### 环境变量
+#### 2. 配置构建设置
+在 **Settings > Builds and deployments** 中配置：
+
 ```
-AUTH_SECRET=your-production-secret-key
-AUTH_URL=https://your-domain.pages.dev
+Framework preset: Next.js (Static HTML Export)
+Build command: npm install && npm run build:cf
+Build output directory: .vercel/output/static
+Root directory: / (默认)
+Node.js version: 22.x
+```
+
+#### 3. 配置环境变量
+在 **Settings > Environment variables** 中添加：
+
+```
+AUTH_SECRET=your-secure-random-string-here
+AUTH_URL=https://your-project.pages.dev
 SKIP_ENV_VALIDATION=true
+```
+
+#### 4. 配置 D1 数据库绑定
+在 **Settings > Functions > D1 bindings** 中：
+
+```
+Variable name: DATABASE
+D1 database: cf_saas-db
 ```
 
 ### 方案 2：使用自定义构建脚本
