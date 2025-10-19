@@ -78,7 +78,7 @@ src/server/
 ├── auth-mock.ts         # Mock认证配置
 └── auth-config.ts       # 认证配置切换逻辑
 
-src/app/api/auth/[...nextauth]/
+src/app/api/auth/[...next_auth]/
 ├── route.ts             # 原始API路由
 └── route-mock.ts        # Mock API路由
 
