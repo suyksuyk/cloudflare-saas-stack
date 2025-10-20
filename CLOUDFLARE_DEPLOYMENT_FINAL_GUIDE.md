@@ -17,17 +17,18 @@
 
 ## 🚀 快速部署步骤
 
-### 步骤 1: 运行修复脚本
+### 步骤 1: 运行增强构建脚本
 ```bash
-node fix-cf-deployment.js
+node build-with-fix.js
 ```
 
 这个脚本会：
-- ✅ 检查配置是否正确
+- ✅ 应用增强的 webpack 配置
 - ✅ 清理构建缓存
-- ✅ 验证环境变量
-- ✅ 测试本地构建
-- ✅ 测试 Cloudflare Pages 构建
+- ✅ 设置必要的环境变量
+- ✅ 运行 Next.js 构建
+- ✅ 运行 Cloudflare Pages 适配
+- ✅ 自动恢复原始配置
 
 ### 步骤 2: 提交代码
 ```bash
@@ -45,7 +46,7 @@ git push origin main
 
 2. **设置构建配置**
    ```
-   构建命令: npm run build
+   构建命令: node build-with-fix.js
    构建输出目录: .next
    ```
 
