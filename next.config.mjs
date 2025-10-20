@@ -10,9 +10,16 @@ if (process.env.NODE_ENV === 'development') {
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // 禁用 webpack 缓存以避免 Cloudflare Pages 文件大小限制
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, dev }) => {
     if (isServer) {
       config.cache = false;
+      // 修复 async_hooks 问题 - 在生产环境中排除 Node.js 内置模块
+      if (!dev) {
+        config.externals = config.externals || [];
+        config.externals.push({
+          'async_hooks': 'commonjs async_hooks'
+        });
+      }
     }
     return config;
   },
