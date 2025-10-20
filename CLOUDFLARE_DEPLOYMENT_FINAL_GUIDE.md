@@ -48,7 +48,10 @@ git push origin main
    ```
    构建命令: node build-with-fix.js
    构建输出目录: .next
+   根目录: / (留空或设置为根目录)
    ```
+   
+   **重要**: 构建命令必须在 Cloudflare Pages Dashboard 中设置，不能在 wrangler.toml 中设置。
 
 3. **设置环境变量**
    ```
@@ -56,6 +59,7 @@ git push origin main
    NEXTAUTH_SECRET: your-secret-key
    GOOGLE_CLIENT_ID: your-google-client-id
    GOOGLE_CLIENT_SECRET: your-google-client-secret
+   NODE_VERSION: 18
    ```
 
 ### 步骤 4: 部署
