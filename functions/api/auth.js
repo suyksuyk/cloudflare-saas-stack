@@ -4,12 +4,12 @@ export async function onRequest(context) {
   const { request, env } = context;
   
   try {
-    // 设置环境变量
-    process.env.NEXTAUTH_SECRET = env.NEXTAUTH_SECRET || 'fallback-secret';
-    process.env.NEXTAUTH_URL = env.NEXTAUTH_URL || 'https://cloudflare-saas-stack-9ld.pages.dev';
-    process.env.GOOGLE_CLIENT_ID = env.GOOGLE_CLIENT_ID;
-    process.env.GOOGLE_CLIENT_SECRET = env.GOOGLE_CLIENT_SECRET;
-    process.env.USE_MOCK_AUTH = env.USE_MOCK_AUTH || 'false';
+    // 使用环境变量，不依赖 process.env
+    const NEXTAUTH_SECRET = env.NEXTAUTH_SECRET || 'fallback-secret';
+    const NEXTAUTH_URL = env.NEXTAUTH_URL || 'https://cloudflare-saas-stack-9ld.pages.dev';
+    const GOOGLE_CLIENT_ID = env.GOOGLE_CLIENT_ID;
+    const GOOGLE_CLIENT_SECRET = env.GOOGLE_CLIENT_SECRET;
+    const USE_MOCK_AUTH = env.USE_MOCK_AUTH || 'false';
     
     // 获取请求方法和URL
     const url = new URL(request.url);
@@ -43,9 +43,9 @@ export async function onRequest(context) {
       
       // Google OAuth 登录请求
       if (method === 'GET' && url.pathname.includes('/signin/google')) {
-        const redirectUri = `${process.env.NEXTAUTH_URL}/api/auth/callback/google`;
+        const redirectUri = `${NEXTAUTH_URL}/api/auth/callback/google`;
         const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-          `client_id=${process.env.GOOGLE_CLIENT_ID}&` +
+          `client_id=${GOOGLE_CLIENT_ID}&` +
           `redirect_uri=${encodeURIComponent(redirectUri)}&` +
           `response_type=code&` +
           `scope=openid email profile&` +
@@ -61,7 +61,7 @@ export async function onRequest(context) {
         const error = url.searchParams.get('error');
         
         if (error) {
-          return Response.redirect(`${process.env.NEXTAUTH_URL}/auth/error?error=${error}`, 302);
+          return Response.redirect(`${NEXTAUTH_URL}/auth/error?error=${error}`, 302);
         }
         
         if (code) {
@@ -73,11 +73,11 @@ export async function onRequest(context) {
                 'Content-Type': 'application/x-www-form-urlencoded',
               },
               body: new URLSearchParams({
-                client_id: process.env.GOOGLE_CLIENT_ID,
-                client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                client_id: GOOGLE_CLIENT_ID,
+                client_secret: GOOGLE_CLIENT_SECRET,
                 code: code,
                 grant_type: 'authorization_code',
-                redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/google`,
+                redirect_uri: `${NEXTAUTH_URL}/api/auth/callback/google`,
               }),
             });
             
@@ -110,14 +110,14 @@ export async function onRequest(context) {
             return new Response(null, {
               status: 302,
               headers: {
-                'Location': `${process.env.NEXTAUTH_URL}/`,
+                'Location': `${NEXTAUTH_URL}/`,
                 'Set-Cookie': `next-auth.session-token=${btoa(JSON.stringify(sessionData))}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${30 * 24 * 60 * 60}`,
               },
             });
             
           } catch (error) {
             console.error('Google OAuth callback error:', error);
-            return Response.redirect(`${process.env.NEXTAUTH_URL}/auth/error?error=OAuthCallback`, 302);
+            return Response.redirect(`${NEXTAUTH_URL}/auth/error?error=OAuthCallback`, 302);
           }
         }
       }
