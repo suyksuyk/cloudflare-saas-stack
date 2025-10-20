@@ -83,6 +83,16 @@ export function SignInButton({
     setInternalError(null);
     
     try {
+      // 对于 Google OAuth，使用重定向模式
+      if (provider === "google") {
+        await signIn(provider, {
+          callbackUrl,
+          redirect: true,
+        });
+        return;
+      }
+      
+      // 对于其他提供商，使用非重定向模式
       const result = await signIn(provider, {
         callbackUrl,
         redirect: false,
