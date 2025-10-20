@@ -10,16 +10,45 @@ if (process.env.NODE_ENV === 'development') {
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // 禁用 webpack 缓存以避免 Cloudflare Pages 文件大小限制
-  webpack: (config, { isServer, dev }) => {
+  webpack: (config, { isServer, dev, webpack }) => {
     if (isServer) {
       config.cache = false;
-      // 修复 async_hooks 问题 - 在生产环境中排除 Node.js 内置模块
-      if (!dev) {
-        config.externals = config.externals || [];
+      
+      // 精确的 async_hooks 修复 - 只处理有问题的模块
+      config.externals = config.externals || [];
+      
+      // 只排除在 Cloudflare Pages 中不支持的模块
+      const unsupportedModules = [
+        'async_hooks',
+        'worker_threads',
+        'cluster',
+        'child_process'
+      ];
+      
+      unsupportedModules.forEach(module => {
         config.externals.push({
-          'async_hooks': 'commonjs async_hooks'
+          [module]: `commonjs ${module}`
         });
+      });
+      
+      // 在生产环境中添加 IgnorePlugin 来完全忽略 async_hooks
+      if (!dev) {
+        config.plugins.push(
+          new webpack.IgnorePlugin({
+            resourceRegExp: /^async_hooks$/
+          })
+        );
       }
+      
+      // 添加 resolve 配置来处理模块解析
+      config.resolve = config.resolve || {};
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        async_hooks: false,
+        worker_threads: false,
+        cluster: false,
+        child_process: false
+      };
     }
     return config;
   },
@@ -33,6 +62,11 @@ const nextConfig = {
   // 禁用某些优化以减小文件大小
   experimental: {
     optimizeCss: false,
+  },
+  // 添加环境变量来控制构建行为
+  env: {
+    NEXT_BUILD_WORKERS: 'true',
+    NEXT_DISABLE_SOURCEMAPS: 'true'
   },
 };
 

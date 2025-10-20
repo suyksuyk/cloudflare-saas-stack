@@ -18,21 +18,50 @@ The package "async_hooks" wasn't found on the file system but is built into node
 
 ### 1. 修改 Next.js 配置
 
-在 `next.config.mjs` 中添加 webpack 配置来处理 `async_hooks` 模块：
+在 `next.config.mjs` 中添加更全面的 webpack 配置来处理 `async_hooks` 和其他不兼容的模块：
 
 ```javascript
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  webpack: (config, { isServer, dev }) => {
+  webpack: (config, { isServer, dev, webpack }) => {
     if (isServer) {
       config.cache = false;
-      // 修复 async_hooks 问题 - 在生产环境中排除 Node.js 内置模块
-      if (!dev) {
-        config.externals = config.externals || [];
+      
+      // 精确的 async_hooks 修复 - 只处理有问题的模块
+      config.externals = config.externals || [];
+      
+      // 只排除在 Cloudflare Pages 中不支持的模块
+      const unsupportedModules = [
+        'async_hooks',
+        'worker_threads',
+        'cluster',
+        'child_process'
+      ];
+      
+      unsupportedModules.forEach(module => {
         config.externals.push({
-          'async_hooks': 'commonjs async_hooks'
+          [module]: `commonjs ${module}`
         });
+      });
+      
+      // 在生产环境中添加 IgnorePlugin 来完全忽略 async_hooks
+      if (!dev) {
+        config.plugins.push(
+          new webpack.IgnorePlugin({
+            resourceRegExp: /^async_hooks$/
+          })
+        );
       }
+      
+      // 添加 resolve 配置来处理模块解析
+      config.resolve = config.resolve || {};
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        async_hooks: false,
+        worker_threads: false,
+        cluster: false,
+        child_process: false
+      };
     }
     return config;
   },
